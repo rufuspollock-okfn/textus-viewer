@@ -1,0 +1,46 @@
+<!-- This is the main text reader UI, it consists of several sub-components -->
+<div id="toolbar">
+	<div class='btn-group pull-left'>
+		<a class='btn' id='index-button' href=''><i class='icon-list-alt'></i> Index</a>
+	</div>
+	<div class='show-if-select pull-left'
+		style='display: none; padding-left: 5px;'>
+		<div class='btn-group pull-left'>
+			<a class='btn btn-info' id='cite-button'><i class='icon-share-alt icon-white'></i>
+				Cite</a>
+		</div>
+		<div class='btn-group pull-left show-if-login'>
+			<a class='btn btn-success' id='annotate-button'><i class='icon-pencil icon-white'></i>
+				Annotate</a> <a class='btn btn-success'><i
+				class='icon-heart icon-white'></i> Save to list</a>
+		</div>
+	</div>
+</div>
+
+<div class="pageContainer">
+	<!-- Groups the canvas and page text together -->
+
+	<canvas id="pageCanvas">
+			<!-- Used to render annotation indicators -->
+			Your browser doesn't support canvas, this isn't going to end well...
+			</canvas>
+	<canvas id="linkCanvas">
+			<!-- Used to render the links between annotation blobs and their corresponding DIV elements -->
+			</canvas>
+	<!-- The pageTextMeasure is used to work out how much text to render to fill the pageText div -->
+	<div class="pageTextMeasure"></div>
+	<div class="pageText">
+		<!-- Contains the actual text to be read -->
+	</div>
+	<div class="topMargin"></div>
+	<div class="annotations">
+		<!-- Contains divs for each semantic annotation -->
+	</div>
+	<div class="pageButtons">
+		<a href="#" id="previousPageButton"
+			style="height: 40px; line-height: 40px; width: 80px;"
+			class="btn pull-left">Previous</a> <a href="#" id="nextPageButton"
+			style="height: 40px; line-height: 40px; width: 80px;"
+			class="btn pull-right">Next</a>
+	</div>
+</div>

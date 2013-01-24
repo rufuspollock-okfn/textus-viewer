@@ -1,0 +1,192 @@
+/* Annotation container on the right hand of the page */
+.pageContainer .annotations {
+	position: absolute;
+	top: 21px;
+	bottom: 80px;
+	right: 0px;
+	width: 260px;
+	padding: 10px 20px 10px 15px;
+	margin-top: 0px;
+	overflow-y: auto;
+}
+
+.pageContainer ::-webkit-scrollbar {
+	width: 0 !important;
+	height: 0 !important
+}
+
+.pageContainer .pageButtons {
+	position: absolute;
+	bottom: 20px;
+	right: 10px;
+	width: 260px;
+	height: 50px;
+	padding-top: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-color: #ddd;
+	border-style: solid;
+	border-width: 1px 0px 0px 0px;
+}
+
+.pageContainer .topMargin {
+	position: absolute;
+	top: 20px;
+	right: 10px;
+	width: 260px;
+	height: 0px;
+	padding-top: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-color: #ddd;
+	border-style: solid;
+	border-width: 1px 0px 0px 0px;
+}
+
+#toolbar {
+	position: absolute;
+	top: 40px;
+	right: 0px;
+	left: 0px;
+	z-index: 1;
+	padding-top: 10px;
+	/*padding-bottom: 0px;*/
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+/* Each top level annotation div within the annotation container */
+.pageContainer .annotations>div.annotation {
+	display: block;
+	border: solid;
+	border-width: 1px;
+	border-color: #bbb;
+	position: relative;
+	margin: 0px 0px 5px 0px;
+	padding: 5px 5px 5px 30px;
+	background-color: #fffefe;
+	-moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 2px 2px 3px #bbb;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+.pageContainer .annotations>div.annotation .edit-annotation-button {
+	position: absolute;
+	padding: 0px;
+	width: 19px;
+	height: 19px;
+	line-height: 20px;
+	left: 1px;
+	top: 1px;
+	z-index: 4;
+}
+
+/* Styles for the basic set of annotations [p,i1,i2,i3,i4,i5,i6,b,i] */
+/* Lists and heading elements are defined globally in mainLayout.css */
+span.p,span.paragraph,span.i1,span.i2,span.i3,span.i4,span.i5,span.i6 {
+	display: block;
+	/*font-size: 12pt;
+	line-height: 16pt;*/
+	padding-bottom: 2px;
+	text-align: justify;
+	text-indent: 0px;
+}
+
+span.p {
+	margin-bottom: 10px;
+}
+
+span.i1 {
+	text-indent: 20px;
+}
+
+span.i2 {
+	text-indent: 30px;
+}
+
+span.i3 {
+	text-indent: 40px;
+}
+
+span.i4 {
+	text-indent: 50px;
+}
+
+span.i5 {
+	text-indent: 60px;
+}
+
+span.i6 {
+	text-indent: 70px;
+}
+
+span.b {
+	font-weight: bold;
+}
+
+span.i {
+	font-style: italic;
+}
+
+/* Contains the contents of the reader layout, including the page HTML, */
+/* the annotation container and the canvases */
+.pageContainer {
+	position: absolute;
+	top: 70px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	overflow-y: hidden;
+	overflow-x: hidden;
+}
+
+/* Canvases used to render the annotation indicators on the page and the coloured overlays on the annotation divs */
+.pageContainer canvas {
+	position: absolute;
+	top: 20px;
+	left: 0px;
+	z-index: 3;
+	pointer-events: none;
+}
+
+/* HTML Text of the page being read */
+.pageContainer .pageText {
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+	overflow-y: hidden;
+	z-index: 2;
+	-webkit-user-select: text;
+}
+
+.pageTextMeasure,.pageContainer .pageText {
+	position: absolute;
+	padding: 10px;
+	margin: 20px 300px 20px 20px;
+	margin-right: 300px;
+	margin-right: 300px;
+}
+
+.pageContainer .pageText {
+	background-color: white;
+	-moz-box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+	box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+/* Off-page element used to preview the size of the rendered text whilst filling */
+.pageTextMeasure {
+	left: -10000px;
+}
+
+/* Dummy divs inserted to indicate the start and end points of annotations */
+.textus-annotation-start,.textus-annotation-end {
+	width: 0px;
+	display: inline-block;
+	white-space: nowrap;
+}
