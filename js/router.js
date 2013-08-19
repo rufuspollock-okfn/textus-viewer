@@ -13,7 +13,6 @@ define(
 				routes : {
 					'text/:textId/:offset' : 'text',
 					'texts' : 'texts',
-					'test' : 'test',
 					'meta/:textId' : 'textMeta',
 					'snippet/:textId/:startOffset/:endOffset' : 'snippet',
 					'*actions' : 'defaultActions'
@@ -50,12 +49,7 @@ define(
 						offset : 0,
 						router : appRouter
 					});
-				},
-
-				test : function() {
-					this.startActivity(new TestActivity());
 				}
-
 			}));
 
 			return {
