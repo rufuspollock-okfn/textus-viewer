@@ -6,11 +6,33 @@ define([ 'textus', 'views/textView', 'views/editSemanticAnnotationView', 'models
 		/**
 		 * Called when populating the model, retrieves a single extent of text along with its
 		 * typographical and semantic annotations.
+     *
+
+      Return struct of form:
+     
+      {
+        text: "string ....",
+        typography:
+        semantics: 
+        metadata: 
+      }
 		 */
 		var retrieveText = function(textId, offset, length, callback) {
 			// console.log("Retrieving " + length + " characters of text from " + offset);
-			$.getJSON("api/text/" + textId + "/" + offset + "/" + (offset + length), function(data) {
-				callback(data);
+			// $.getJSON("api/text/" + textId + "/" + offset + "/" + (offset + length), function(data) {
+			//	callback(data);
+			// });
+      var result = {semantics: []};
+      var count = 2;
+			$.get("testdata/1-text.txt", function(data) {
+        result.text = data;
+        count --;
+        if (count == 0) callback(result);
+			});
+			$.getJSON("testdata/1-typography.json", function(data) {
+        result.typography = data;
+        count --;
+        if (count == 0) callback(result);
 			});
 		};
 

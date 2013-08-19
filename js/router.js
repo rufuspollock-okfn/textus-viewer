@@ -1,12 +1,8 @@
 // Router, loads appropriate pages based on target URL
 define(
-		[ 'activities/appActivity', 'activities/readTextActivity', 'activities/listTextsActivity', 'views/loginView',
-				'activities/textUploadActivity', 'activities/userPrefsActivity', 'activities/reviewTextUploadActivity',
-				'activities/createPasswordActivity', 'activities/loginActivity', 'activities/testActivity',
-				'activities/editTextMetadataActivity', 'activities/myUploadsActivity', 'activities/snippetActivity',
-				'models' ], function(AppActivity, ReadTextActivity, ListTextsActivity, LoginView, TextUploadActivity,
-				UserPrefsActivity, ReviewTextUploadActivity, CreatePasswordActivity, LoginActivity, TestActivity,
-				EditTextMetadataActivity, MyUploadsActivity, SnippetActivity, models) {
+		[ 'activities/appActivity', 'activities/readTextActivity',
+				'activities/snippetActivity',
+				'models' ], function(AppActivity, ReadTextActivity, SnippetActivity, models) {
 
 			/**
 			 * Router defined here, add client-side routes here to handle additional pages and
@@ -17,21 +13,10 @@ define(
 				routes : {
 					'text/:textId/:offset' : 'text',
 					'texts' : 'texts',
-					'login/:redirectTo' : 'login',
-					'upload' : 'uploadText',
-					'account' : 'userPrefs',
-					'register' : 'register',
-					'review' : 'review',
-					'password/:userId/:confirmKey' : 'password',
 					'test' : 'test',
 					'meta/:textId' : 'textMeta',
-					'uploads' : 'uploads',
 					'snippet/:textId/:startOffset/:endOffset' : 'snippet',
 					'*actions' : 'defaultActions'
-				},
-
-				uploads : function() {
-					this.startActivity(new MyUploadsActivity());
 				},
 
 				texts : function() {
@@ -54,33 +39,17 @@ define(
 					this.startActivity(new EditTextMetadataActivity(textId));
 				},
 
-				password : function(userId, confirmKey) {
-					this.startActivity(new CreatePasswordActivity(decodeURIComponent(userId),
-							decodeURIComponent(confirmKey)));
-				},
-
-				login : function(redirectTo) {
-					this.startActivity(new LoginActivity(decodeURIComponent(redirectTo)));
-				},
-
-				uploadText : function() {
-					this.startActivity(new TextUploadActivity());
-				},
-
-				userPrefs : function() {
-					this.startActivity(new UserPrefsActivity());
-				},
-
-				register : function() {
-					this.startActivity(new RegisterUserActivity());
-				},
-
 				review : function() {
 					this.startActivity(new ReviewTextUploadActivity());
 				},
 
 				defaultActions : function() {
-					this.startActivity(new AppActivity());
+					// this.startActivity(new AppActivity());
+					this.startActivity(new ReadTextActivity(), {
+						textId : 1,
+						offset : 0,
+						router : appRouter
+					});
 				},
 
 				test : function() {

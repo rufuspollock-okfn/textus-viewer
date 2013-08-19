@@ -114,7 +114,7 @@ require([ 'router', 'models', 'loginClient' ], function(Router, models, loginCli
 				window.document.title = "Textus Beta";
 			}
 
-			loginClient.getCurrentUser(function() {
+			// loginClient.getCurrentUser(function() {
 				$('#main').empty();
 				if (location != null) {
 					console.log("Starting activity '" + activityName + "' with location '" + location + "'");
@@ -123,7 +123,7 @@ require([ 'router', 'models', 'loginClient' ], function(Router, models, loginCli
 					console.log("Starting activity '" + activityName + "' with no location.");
 					_listenersToUnbind = activity.start();
 				}
-			});
+			// });
 		}
 	};
 
