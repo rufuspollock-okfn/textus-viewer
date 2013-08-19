@@ -5,7 +5,7 @@ require.config({
 	 * is glitchy
 	 */
 	paths : {
-		text : 'scripts/require.text-2.0.1',
+		text : '../vendor/require.text-2.0.1',
 		templates : '../templates'
 	},
 	shim : {
