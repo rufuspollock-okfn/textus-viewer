@@ -23,7 +23,7 @@ define([ 'textus', 'views/textView', 'views/editSemanticAnnotationView', 'models
 			//	callback(data);
 			// });
       var result = {semantics: []};
-      var count = 2;
+      var count = 3;
 			$.get("testdata/1-text.txt", function(data) {
         result.text = data;
         count --;
@@ -31,6 +31,11 @@ define([ 'textus', 'views/textView', 'views/editSemanticAnnotationView', 'models
 			});
 			$.getJSON("testdata/1-typography.json", function(data) {
         result.typography = data;
+        count --;
+        if (count == 0) callback(result);
+			});
+			$.getJSON("testdata/1-annotations.json", function(data) {
+        result.semantics = data;
         count --;
         if (count == 0) callback(result);
 			});

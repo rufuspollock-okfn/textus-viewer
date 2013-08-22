@@ -16,7 +16,7 @@ define([ 'textus', 'text!templates/textView.html', 'views/annotationTypes', 'mod
 	var annotationRenderers = annotationTypes.renderers;
 
 	/**
-	 * Create DIV elements in the annotation container corresponding to the supplied semantic
+	 * Cnreate DIV elements in the annotation container corresponding to the supplied semantic
 	 * annotations.
 	 * 
 	 * @param semantics
@@ -41,7 +41,7 @@ define([ 'textus', 'text!templates/textView.html', 'views/annotationTypes', 'mod
 				'final' : 'black',
 				'unknown' : 'pink'
 			}[annotation.visibility ? annotation.visibility : 'unknown'];
-			var userName = (annotation.dynamic.displayName ? annotation.dynamic.displayName : annotation.user);
+			var userName = (annotation.dynamic && annotation.dynamic.displayName ? annotation.dynamic.displayName : annotation.user);
 			var userDisplay = {
 				'private' : userName + " <sup style='color:" + colour + "'>[private]</sup>",
 				'provisional' : userName + " <sup style='color:" + colour + "'>[provisional]</sup>",
@@ -102,7 +102,7 @@ define([ 'textus', 'text!templates/textView.html', 'views/annotationTypes', 'mod
 				regions[annotation.id] = {
 					x : annotation.anchor.x,
 					y : annotation.anchor.y,
-					colour : (annotation.dynamic.colour ? annotation.dynamic.colour : "rgba(0,0,0,0.2)")
+					colour : (annotation.dynamic && annotation.dynamic.colour ? annotation.dynamic.colour : "rgba(0,0,0,0.2)")
 				};
 			}
 		});
@@ -261,7 +261,7 @@ define([ 'textus', 'text!templates/textView.html', 'views/annotationTypes', 'mod
 			 * red if colour isn't available.
 			 */
 			var annotation = regions[r.id];
-			if (annotation.dynamic.colour) {
+			if (annotation.dynamic && annotation.dynamic.colour) {
 				ctx.fillStyle = annotation.dynamic.colour;
 			} else {
 				ctx.fillStyle = "rgba(255,0,0,0.1)";

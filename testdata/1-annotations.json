@@ -1,0 +1,10 @@
+[
+  {
+		"start" : 0,
+		"end" : 4,
+		"type" : "textus:comment",
+		"payload" : {
+			"text" : "This is a comment"
+		}
+  }
+]
