@@ -1,8 +1,7 @@
 // Router, loads appropriate pages based on target URL
 define(
 		[ 'activities/appActivity', 'activities/readTextActivity',
-				'activities/snippetActivity',
-				'models' ], function(AppActivity, ReadTextActivity, SnippetActivity, models) {
+				'models' ], function(AppActivity, ReadTextActivity, models) {
 
 			/**
 			 * Router defined here, add client-side routes here to handle additional pages and
@@ -14,7 +13,6 @@ define(
 					'text/:textId/:offset' : 'text',
 					'texts' : 'texts',
 					'meta/:textId' : 'textMeta',
-					'snippet/:textId/:startOffset/:endOffset' : 'snippet',
 					'*actions' : 'defaultActions'
 				},
 
@@ -28,10 +26,6 @@ define(
 						offset : parseInt(offset),
 						router : appRouter
 					});
-				},
-
-				snippet : function(textId, startOffset, endOffset) {
-					this.startActivity(new SnippetActivity(textId, parseInt(startOffset), parseInt(endOffset), appRouter));
 				},
 
 				textMeta : function(textId) {

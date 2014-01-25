@@ -1,5 +1,5 @@
-define([ 'textus', 'views/textView', 'views/editSemanticAnnotationView', 'models', 'markers' ], function(textus,
-		TextView, EditSemanticAnnotationView, models, markers) {
+define([ 'textus', 'views/textView', 'views/editSemanticAnnotationView', 'models' ], function(textus,
+		TextView, EditSemanticAnnotationView, models) {
 
 	return function() {
 
@@ -404,36 +404,6 @@ define([ 'textus', 'views/textView', 'views/editSemanticAnnotationView', 'models
 				}, event);
 				return false;
 			});
-
-			$('#index-button').click(
-					function(event) {
-						var textId = models.textLocationModel.get("textId");
-						$.getJSON('/api/meta/' + textId, function(metadata) {
-							var indexEntries = markers(metadata).indexPoints();
-							textus.showModal({
-								constructor : function(container, header, closeModal) {
-									header.append("<h4>Index</h4>");
-									indexEntries.forEach(function(entry) {
-										var link = "<a href='#/text/" + textId + "/" + entry.offset + "'>" + entry.text
-												+ "</a>";
-										container.append("<div style='margin-left:" + (parseInt(entry.level) * 20)
-												+ "px; line-height: 25px; height: 25px;'>" + link + "</div>");
-										$('div:last-child', container)
-												.click(
-														function() {
-															updateTextAsync(models.textLocationModel.get("textId"),
-																	entry.offset, true, textView.pageHeight(),
-																	textView.measure);
-
-															closeModal();
-														});
-									});
-								},
-								position : "bottom"
-							}, event);
-						});
-						return false;
-					});
 
 			if (models.loginModel.get("loggedIn")) {
 				$('.show-if-login').show();
