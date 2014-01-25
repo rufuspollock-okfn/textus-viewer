@@ -146,7 +146,7 @@ require([ 'activities/readTextActivity', 'models' ],
         window.document.title = "Textus Beta";
       }
 
-      // TODO: reinstate once getCurrentUser functioning again
+      // TODO: set current user properly - loginClient is now removed
       // loginClient.getCurrentUser(function() {
         $('#main').empty();
         if (location != null) {
