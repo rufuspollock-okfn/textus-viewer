@@ -26,7 +26,9 @@ var _listenersToUnbind = null;
 
 Form = Backbone.Form;
 
-require([ 'router', 'models', 'loginClient' ], function(Router, models, loginClient) {
+require([ 'activities/readTextActivity', 'models' ],
+    function(ReadTextActivity, models) {
+
   /* Configure the Form layout to use bootstrap CSS */
   Form.setTemplates({
     form : '<form class="form-horizontal">{{fieldsets}}</form>',
@@ -63,7 +65,37 @@ require([ 'router', 'models', 'loginClient' ], function(Router, models, loginCli
     }
   };
 
-  var startActivity = function(activity, location) {
+  /**
+   * Router defined here, add client-side routes here to handle additional pages and
+   * manage history sensibly.
+   */
+  var TextusRouter = Backbone.Router.extend({
+      routes : {
+        'text/:textId/:offset' : 'text',
+        'texts' : 'texts',
+        'meta/:textId' : 'textMeta',
+        '*actions' : 'defaultActions'
+      },
+
+      text : function(textId, offset) {
+        this.startActivity(new ReadTextActivity(), {
+          textId : textId,
+          offset : parseInt(offset),
+          router : appRouter
+        });
+      },
+
+      defaultActions : function() {
+        this.startActivity(new ReadTextActivity(), {
+          textId : 1,
+          offset : 0,
+          router : appRouter
+        });
+      }
+  });
+  var appRouter = new TextusRouter();
+
+  appRouter.startActivity = function(activity, location) {
     var activityName = (activity.hasOwnProperty('name') ? activity.name : "<unknown activity>");
     if (_currentActivity != null) {
       var currentActivityName = (_currentActivity.hasOwnProperty('name') ? _currentActivity.name
@@ -128,9 +160,6 @@ require([ 'router', 'models', 'loginClient' ], function(Router, models, loginCli
     }
   };
 
-  /* Extend a startActivity function to Backbone.Router */
-  Backbone.Router.prototype.startActivity = startActivity;
-
   /* Initialise the router, starting the application */
-  Router.initialize();
+  Backbone.history.start();
 });
