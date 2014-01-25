@@ -134,17 +134,8 @@ require([ 'activities/readTextActivity', 'models' ],
       });
     }
     if (_currentActivity == null) {
-      $('#main-nav').children().removeClass('active');
-      $('#main-nav li#' + activity.name).addClass('active');
       _currentActivity = activity;
       _currentFragment = Backbone.history.fragment;
-      if (activity.pageTitle) {
-        $('#main-title').html(activity.pageTitle);
-        window.document.title = "Textus - " + activity.pageTitle;
-      } else {
-        $('#main-title').html("No title");
-        window.document.title = "Textus Beta";
-      }
 
       // TODO: set current user properly - loginClient is now removed
       // loginClient.getCurrentUser(function() {
