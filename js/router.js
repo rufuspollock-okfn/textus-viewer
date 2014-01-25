@@ -1,7 +1,7 @@
 // Router, loads appropriate pages based on target URL
 define(
-		[ 'activities/appActivity', 'activities/readTextActivity',
-				'models' ], function(AppActivity, ReadTextActivity, models) {
+		[ 'activities/readTextActivity',
+				'models' ], function(ReadTextActivity, models) {
 
 			/**
 			 * Router defined here, add client-side routes here to handle additional pages and
@@ -37,7 +37,6 @@ define(
 				},
 
 				defaultActions : function() {
-					// this.startActivity(new AppActivity());
 					this.startActivity(new ReadTextActivity(), {
 						textId : 1,
 						offset : 0,
