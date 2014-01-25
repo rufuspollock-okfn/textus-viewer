@@ -114,6 +114,7 @@ require([ 'router', 'models', 'loginClient' ], function(Router, models, loginCli
 				window.document.title = "Textus Beta";
 			}
 
+      // TODO: reinstate once getCurrentUser functioning again
 			// loginClient.getCurrentUser(function() {
 				$('#main').empty();
 				if (location != null) {
@@ -129,34 +130,6 @@ require([ 'router', 'models', 'loginClient' ], function(Router, models, loginCli
 
 	/* Extend a startActivity function to Backbone.Router */
 	Backbone.Router.prototype.startActivity = startActivity;
-
-	/* Bind the appropriate events for the login buttons */
-	models.loginModel.bind("change", function() {
-		if (models.loginModel.get("loggedIn")) {
-			var user = models.loginModel.get("user");
-			$('#main-username').html(user.id);
-			$('#main-account-options').show();
-			$('#main-login').hide();
-			$('.textus-require-login').show();
-		} else {
-			$('#main-account-options').hide();
-			$('#main-login').show();
-			$('.textus-require-login').hide();
-		}
-	});
-	$('#main-login-button').click(function() {
-		var encodedRedirect = encodeURIComponent(window.location.hash);
-		if (encodedRedirect == "") {
-			encodedRedirect = "%23";
-		}
-		window.location.replace("/#login/" + encodedRedirect);
-		return false;
-	});
-	$('#main-logout-button').click(function() {
-		loginClient.logout();
-		window.location.replace("/#");
-		return false;
-	});
 
 	/* Initialise the router, starting the application */
 	Router.initialize();
