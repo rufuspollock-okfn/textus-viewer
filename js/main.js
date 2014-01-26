@@ -86,10 +86,19 @@ require([ 'activities/readTextActivity', 'models' ],
       },
 
       defaultActions : function() {
-        this.startActivity(new ReadTextActivity(), {
-          textId : 1,
-          offset : 0,
-          router : appRouter
+        var self = this;
+        var config = {
+          textUrl: 'testdata/1-text.txt',
+          typographyUrl: 'testdata/1-typography.json',
+          annotationsUrl: 'testdata/1-annotations.json'
+        };
+        var text = new Textus.Model.Text(config);
+        text.fetch(function(err) {
+          self.startActivity(new ReadTextActivity(), {
+            text: text,
+            offset: 0,
+            router : appRouter
+          });
         });
       }
   });

@@ -1,7 +1,8 @@
-define([], function() {
+var Textus = Textus || {};
+Textus.Util = {};
 
-  return {
-
+(function(my) {
+  out = {
     /**
      * Render a BibJSON object to a string of HTML. This is an attempt to implement the style
      * guide at http://www.chicagomanualofstyle.org/tools_citationguide.html/ - it's partial at
@@ -327,5 +328,6 @@ define([], function() {
       return result.join("") + " ";
     }
   };
+  _.extend(my, out);
+}(Textus.Util));
 
-});

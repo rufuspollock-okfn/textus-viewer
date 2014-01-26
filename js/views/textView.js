@@ -1,6 +1,6 @@
 // Defines TextView
 
-define([ 'textus', 'text!templates/textView.html', 'views/annotationTypes', 'models' ], function(textus, layout,
+define(['text!templates/textView.html', 'views/annotationTypes', 'models' ], function(layout,
     annotationTypes, models) {
 
   /**
@@ -307,12 +307,85 @@ define([ 'textus', 'text!templates/textView.html', 'views/annotationTypes', 'mod
     });
   };
 
-  var TextView = Backbone.View.extend({
+  /*
+   * Create the presenter, this is the mediator between user interaction and the result of
+   * that interaction
+   */
+  var presenter = {
+    /**
+     * Called by the view when a selection of text has been made, used to set the text
+     * selection model.
+     * 
+     * @param start
+     *            The absolute index of the first character in the selected text.
+     * @param end
+     *            The absolute index of the last character in the selected text, should
+     *            be start + text.length assuming all's working.
+     * @param text
+     *            The text of the selection.
+     */
+    handleTextSelection : function(start, end, text) {
+      if (!isNaN(start) && !isNaN(end)) {
+        models.textSelectionModel.set({
+          start : ((start < end) ? start : end),
+          end : ((end > start) ? end : start),
+          text : text
+        });
+      }
+    },
 
+    forward : function() {
+      updateTextAsync(models.textLocationModel.get("textId"), models.textLocationModel.get("offset")
+          + models.textModel.get("text").length, true, textView.pageHeight(), textView.measure);
+    },
+
+    back : function() {
+      updateTextAsync(models.textLocationModel.get("textId"), models.textLocationModel.get("offset"),
+          false, textView.pageHeight(), textView.measure);
+    },
+    editAnnotation : function(event, annotation) {
+      var textId = models.textLocationModel.get("textId");
+      Textus.Util.showModal({
+        constructor : function(container, header, closeModal) {
+          var editView = new EditSemanticAnnotationView({
+            presenter : {
+              updateAnnotation : function(annotation) {
+                $.post("api/semantics/" + annotation.id, annotation, function(response) {
+                  if (response.success) {
+                    // updateTextAsync(models.textLocationModel.get("textId"), models.textLocationModel.get("offset"), true, textView.pageHeight(), textView.measure);
+                    closeModal();
+                  } else {
+                    window.alert(respose.message);
+                    closeModal();
+                  }
+                });
+              }
+            },
+            annotation : annotation
+          });
+          editView.render();
+          container.append(editView.el);
+          header.append("<h4>Edit annotation [" + annotation.visibility + "]</h4>");
+          firingKeyEvents = false;
+        },
+        beforeClose : function() {
+          firingKeyEvents = true;
+          return true;
+        },
+        position : "left"
+      }, event);
+    }
+  };
+
+  var TextView = Backbone.View.extend({
     initialize : function() {
       _.bindAll(this);
-      var model = this.model = this.options.textModel;
-      var presenter = this.presenter = this.options.presenter;
+      var self = this;
+      var model = this.model.currentText;
+      var textSize = 350;
+      this.textLocationModel = this.options.textLocationModel;
+      // var presenter = this.presenter = this.options.presenter;
+      // var presenter = presenter;
       this.selectionModel = this.options.selectionModel;
       this.$el.html(layout).unbind("mouseup").bind("mouseup", this.defineSelection);
 
@@ -327,30 +400,28 @@ define([ 'textus', 'text!templates/textView.html', 'views/annotationTypes', 'mod
         if (resizeTimer) {
           clearTimeout(resizeTimer);
         }
-        resizeTimer = setTimeout(presenter.requestTextFill, 300);
-        renderCanvas(pageCanvas, pageText, model.get("semantics"));
-        renderLinks(pageText, linkCanvas, model.get("semantics"), annotations);
+        resizeTimer = setTimeout(function() {
+          self.model.getPart(self.textLocationModel.get('offset'), textSize, true);
+        }, 300);
+        renderCanvas(pageCanvas, pageText, model.get('annotations'));
+        renderLinks(pageText, linkCanvas, model.get('annotations'), annotations);
       });
       annotations.scroll(function() {
-        renderLinks(pageText, linkCanvas, model.get("semantics"), annotations);
+        renderLinks(pageText, linkCanvas, model.get('annotations'), annotations);
       });
       model.bind("change:text", function() {
-        model.set({
-          cachedHTML : textus.markupText(model.get("text"), model.get("offset"), model.get("typography"),
-              model.get("semantics"))
-        });
         pageText.html(model.get("cachedHTML"));
       });
-      model.bind("change:semantics", function() {
+      model.bind("change:annotations", function() {
         console.log("Semantics changed - re-rendering");
         model.set({
-          cachedHTML : textus.markupText(model.get("text"), model.get("offset"), model.get("typography"),
-              model.get("semantics"))
+          cachedHTML : Textus.Util.markupText(model.get("text"), model.get("offset"), model.get("typography"),
+              model.get('annotations'))
         });
         pageText.html(model.get("cachedHTML"));
-        populateAnnotationContainer(model.get("semantics"), annotations, presenter);
-        renderCanvas(pageCanvas, pageText, model.get("semantics"));
-        renderLinks(pageText, linkCanvas, model.get("semantics"), annotations);
+        populateAnnotationContainer(model.get('annotations'), annotations, presenter);
+        renderCanvas(pageCanvas, pageText, model.get('annotations'));
+        renderLinks(pageText, linkCanvas, model.get('annotations'), annotations);
       });
       $('#nextPageButton', this.$el).click(function() {
         presenter.forward();
@@ -361,14 +432,12 @@ define([ 'textus', 'text!templates/textView.html', 'views/annotationTypes', 'mod
         return false;
       });
     },
-
     destroy : function() {
       var model = this.model = this.options.textModel;
       model.unbind("change:text");
-      model.unbind("change:semantics");
+      model.unbind("change:annotations");
       $(window).unbind("resize");
     },
-
     /**
      * Populates the test container with the specified HTML and returns its height in pixels.
      */
@@ -381,11 +450,9 @@ define([ 'textus', 'text!templates/textView.html', 'views/annotationTypes', 'mod
       testContainer.html("");
       return height;
     },
-
     pageHeight : function() {
       return $('.pageText').height();
     },
-
     /**
      * Handle text selection, pulls the current selection out and calls the presenter with it if
      * possible.
@@ -430,7 +497,6 @@ define([ 'textus', 'text!templates/textView.html', 'views/annotationTypes', 'mod
         console.log("MS Text Range not supported!");
       }
     }
-
   });
 
   return TextView;
