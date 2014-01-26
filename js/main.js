@@ -97,7 +97,8 @@ require([ 'activities/readTextActivity', 'models' ],
           self.startActivity(new ReadTextActivity(), {
             text: text,
             offset: 0,
-            router : appRouter
+            router : appRouter,
+            user: 'bob'
           });
         });
       }
