@@ -190,13 +190,12 @@ my.trim = function(data, forwards, height, measure) {
         typography : data.typography.filter(annotationFilter),
         semantics : data.semantics.filter(annotationFilter)
       };
-      // models.textModel
-      // models.textLocationModel
     }
   }
 };
 
-my.textSelectionModel = new (Backbone.Model.extend({
+// ## A selection of Text
+my.Selection = Backbone.Model.extend({
   defaults : {
     // The raw text captured by the selection
     text : "",
@@ -208,7 +207,7 @@ my.textSelectionModel = new (Backbone.Model.extend({
     // there are no bugs!)
     end : 0
   }
-}));
+});
 
 var markupStruct = function(struct) {
   return Textus.Util.markupText(struct.text, struct.offset, struct.typography, struct.semantics);

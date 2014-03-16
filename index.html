@@ -40,7 +40,7 @@ jQuery(document).ready(function() {
       text: text,
       router: null,
       user: {
-        name: 'bob'
+        id: 'bob'
       }
     });
     viewer.render();
@@ -53,30 +53,9 @@ jQuery(document).ready(function() {
 	<div class="navbar navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container">
-				<a class="brand" id="main-title-old">Textus</a>
-				<ul class="nav" id="main-nav">
-					<li id="AppActivity"><a href="#"><i class='icon-home'></i> Home</a></li>
-					<li id="ListTextsActivity"><a href="#texts">All Texts</a></li>
-					<li id="TextUploadActivity" class="textus-require-login"><a
-						href="#upload">Upload Text</a></li>
-				</ul>
-				<div id="main-account-options" style="display: none"
-					class="btn-group pull-right">
-					<a class="btn btn-success dropdown-toggle" data-toggle="dropdown"
-						href="#"><span id="main-username">User</span> <span
-						class="caret"></span> </a>
-					<ul class="dropdown-menu">
-						<li><a href="#account"><i class="icon-user"></i> User
-								Preferences</a></li>
-						<li><a href="#uploads"><i class="icon-book"></i> Uploads</a></li>
-						<li class="divider"></li>
-						<li><a href="#logout" id="main-logout-button"><i
-								class="icon-remove"></i> Logout</a>
-					</ul>
-				</div>
-				<ul id="main-login" style="display: none" class="nav pull-right">
-					<li id="LoginActivity"><a class="pull-right" href=""
-						id="main-login-button">Login / Register</a></li>
+				<a class="brand">Textus Viewer Demo</a>
+        <ul class="nav" class="pull-right">
+					<li><a href="http://okfnlabs.org/textus/">Textus Main Project</a></li>
 				</ul>
 			</div>
 		</div>

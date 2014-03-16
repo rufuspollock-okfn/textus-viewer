@@ -1,10 +1,32 @@
 [
   {
+    "id": 1,
 		"start" : 0,
 		"end" : 4,
 		"type" : "textus:comment",
+    "user": "jones",
 		"payload" : {
 			"text" : "This is a comment"
+		}
+  },
+  {
+    "id": 2,
+		"start" : 150,
+		"end" : 180,
+		"type" : "textus:comment",
+    "user": "jones",
+		"payload" : {
+			"text" : "This is a second comment"
+		}
+  },
+  {
+    "id": 3,
+		"start" : 60,
+		"end" : 80,
+		"type" : "textus:comment",
+    "user": "bob",
+		"payload" : {
+			"text" : "This is a comment by the logged in user"
 		}
   }
 ]

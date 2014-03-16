@@ -30,6 +30,8 @@ var Textus = Textus || {};
     initialize: function(options) {
       this.firingKeyEvents = true;
       this.model = options.text;
+      this.selection = new Textus.Model.Selection();
+      this.user = options.user;
       this.loggedIn = options.user !== null;
 
       this.$el.append("<div id='textViewDiv'></div>");
@@ -42,6 +44,7 @@ var Textus = Textus || {};
       this.textView = new my.TextView({
         model: options.text,
         user: options.user,
+        selection: this.selection,
         offset: options.offset, 
         el : $('#textViewDiv')[0]
       });
@@ -66,8 +69,8 @@ var Textus = Textus || {};
       $('#annotate-button').click(function(event) {
         Textus.Util.showModal({
           constructor : function(container, header, closeModal) {
-            var editView = new EditSemanticAnnotationView({
-              presenter : buildAnnotationEditorPresenter(closeModal)
+            var editView = new Textus.Annotation.Editor({
+              presenter : self._buildAnnotationEditorPresenter(closeModal)
             });
             editView.render();
             container.append(editView.el);
@@ -101,15 +104,14 @@ var Textus = Textus || {};
      */
     _setupSelection: function() {
       var self = this;
-      var s = Textus.Model.textSelectionModel;
 
-      s.bind("change", function(event) {
+      this.selection.bind("change", function(event) {
         if (self.loggedIn) {
           $('.show-if-login').show();
         } else {
           $('.show-if-login').hide();
         }
-        if (s.get("text") != "") {
+        if (self.selection.get("text") != "") {
           $('.show-if-select').show();
         } else {
           $('.show-if-select').hide();
@@ -122,9 +124,10 @@ var Textus = Textus || {};
       return {
         createAnnotation : function(newAnnotation) {
           // console.log("Annotation data : " + data);
-          newAnnotation.start = s.get("start");
-          newAnnotation.end = s.get("end");
+          newAnnotation.start = self.selection.get("start");
+          newAnnotation.end = self.selection.get("end");
           newAnnotation.textId = self.model.id;
+          // TODO: 2014-03-16 move this into an appropriate model object
           $.post("api/semantics", newAnnotation, function(returnedAnnotation) {
             var semanticsArray = self.model.get("semantics").slice(0);
             semanticsArray.push(returnedAnnotation);
@@ -196,9 +199,9 @@ var Textus = Textus || {};
       this.textOffset = options.offset || 0;
       this.user = options.user;
       this.loggedIn = options.user !== null;
+      this.selection = options.selection;
       // var presenter = this.presenter = this.options.presenter;
       // var presenter = presenter;
-      this.selectionModel = this.options.selectionModel;
       this.$el.html(this.template)
         .unbind("mouseup")
         .bind("mouseup", this.defineSelection);
@@ -233,7 +236,7 @@ var Textus = Textus || {};
               model.get('annotations'))
         });
         pageText.html(model.get("cachedHTML"));
-        self.populateAnnotationContainer(model.get('annotations'), annotations, presenter);
+        self.populateAnnotationContainer(model.get('annotations'), annotations);
         renderCanvas(pageCanvas, pageText, model.get('annotations'));
         renderLinks(pageText, linkCanvas, model.get('annotations'), annotations);
       });
@@ -306,7 +309,7 @@ var Textus = Textus || {};
        * Only currently supporting the non-IE text range objects, this works fine for the
        * browsers we actually support!
        */
-      if (window.getSelection && this.presenter && this.model) {
+      if (window.getSelection && this.model) {
         var userSelection = window.getSelection();
         var fromNode = userSelection.anchorNode;
         var toNode = userSelection.focusNode;
@@ -316,7 +319,7 @@ var Textus = Textus || {};
               - this.model.get("offset");
           var toChar = parseInt(toNode.parentNode.getAttribute("offset"))
               + parseInt(userSelection.focusOffset) + offsetInParent(toNode) - this.model.get("offset");
-          this.presenter.handleTextSelection(fromChar + this.model.get("offset"), toChar
+          this.handleTextSelection(fromChar + this.model.get("offset"), toChar
               + this.model.get("offset"), this.model.get("text").substring(fromChar, toChar));
         }
       } else if (document.selection) {
@@ -333,7 +336,7 @@ var Textus = Textus || {};
      * @param annotationContainer
      *            The div into which annotation object representations are to be injected
      */
-    populateAnnotationContainer: function(semantics, annotationContainer, presenter) {
+    populateAnnotationContainer: function(semantics, annotationContainer) {
       var self = this;
       annotationContainer.empty();
       semantics.sort(function(a, b) {
@@ -364,20 +367,75 @@ var Textus = Textus || {};
         } else {
           d.append(annotation.id);
         }
-        // TODO: 2014-03-16 replace loginModel - probably put something on TextView object
+        console.log(self.user.id);
         if (self.loggedIn && self.user.id === annotation.user
             && annotation.visibility != 'final') {
           var a = $("<a class='btn btn-success edit-annotation-button'>"
               + "<i class='icon-edit icon-white'></i></a>");
           a.click(function(event) {
-            if (presenter) {
-              presenter.editAnnotation(event, annotation);
-            }
+            self.editAnnotation(event, annotation);
           });
           d.prepend(a);
         }
         annotationContainer.append(d);
       });
+    },
+    
+    // -------------------
+    // presenter methods - mediate between user interaction and the result of
+    // that interaction
+
+    /**
+     * Called by the view when a selection of text has been made, used to set the text
+     * selection model.
+     * 
+     * @param start
+     *            The absolute index of the first character in the selected text.
+     * @param end
+     *            The absolute index of the last character in the selected text, should
+     *            be start + text.length assuming all's working.
+     * @param text
+     *            The text of the selection.
+     */
+    handleTextSelection: function(start, end, text) {
+      if (!isNaN(start) && !isNaN(end)) {
+        this.selection.set({
+          start : ((start < end) ? start : end),
+          end : ((end > start) ? end : start),
+          text : text
+        });
+      }
+    },
+    editAnnotation : function(event, annotation) {
+      Textus.Util.showModal({
+        constructor : function(container, header, closeModal) {
+          var editView = new Textus.Annotation.Editor({
+            presenter : {
+              updateAnnotation : function(annotation) {
+                $.post("api/semantics/" + annotation.id, annotation, function(response) {
+                  if (response.success) {
+                    // updateTextAsync(models.textLocationModel.get("textId"), models.textLocationModel.get("offset"), true, textView.pageHeight(), textView.measure);
+                    closeModal();
+                  } else {
+                    window.alert(respose.message);
+                    closeModal();
+                  }
+                });
+              }
+            },
+            annotation : annotation
+          });
+          editView.render();
+          container.append(editView.el);
+          header.append("<h4>Edit annotation [" + annotation.visibility + "]</h4>");
+          firingKeyEvents = false;
+        },
+        beforeClose : function() {
+          firingKeyEvents = true;
+          return true;
+        },
+        position : "left"
+      }, event);
     }
   });
 
@@ -629,66 +687,6 @@ var Textus = Textus || {};
       ctx.fillRect(r.endx - 6, colourOffset + r.endy - r.endlh, 6, r.endlh);
     });
   };
-
-  /*
-   * Create the presenter, this is the mediator between user interaction and the result of
-   * that interaction
-   */
-  var presenter = {
-    /**
-     * Called by the view when a selection of text has been made, used to set the text
-     * selection model.
-     * 
-     * @param start
-     *            The absolute index of the first character in the selected text.
-     * @param end
-     *            The absolute index of the last character in the selected text, should
-     *            be start + text.length assuming all's working.
-     * @param text
-     *            The text of the selection.
-     */
-    handleTextSelection : function(start, end, text) {
-      if (!isNaN(start) && !isNaN(end)) {
-        models.textSelectionModel.set({
-          start : ((start < end) ? start : end),
-          end : ((end > start) ? end : start),
-          text : text
-        });
-      }
-    },
-    editAnnotation : function(event, annotation) {
-      Textus.Util.showModal({
-        constructor : function(container, header, closeModal) {
-          var editView = new Textus.Annotation.Editor({
-            presenter : {
-              updateAnnotation : function(annotation) {
-                $.post("api/semantics/" + annotation.id, annotation, function(response) {
-                  if (response.success) {
-                    // updateTextAsync(models.textLocationModel.get("textId"), models.textLocationModel.get("offset"), true, textView.pageHeight(), textView.measure);
-                    closeModal();
-                  } else {
-                    window.alert(respose.message);
-                    closeModal();
-                  }
-                });
-              }
-            },
-            annotation : annotation
-          });
-          editView.render();
-          container.append(editView.el);
-          header.append("<h4>Edit annotation [" + annotation.visibility + "]</h4>");
-          firingKeyEvents = false;
-        },
-        beforeClose : function() {
-          firingKeyEvents = true;
-          return true;
-        },
-        position : "left"
-      }, event);
-    }
-  };
-
 
 })(Textus);
 
