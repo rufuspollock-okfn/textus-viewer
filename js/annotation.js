@@ -106,13 +106,7 @@ var Textus = Textus || {};
 		</div>\
 		<div style="position: absolute; right: 0px"\
 			class="editing-annotation inline">\
-			<div style="padding-right: 5px">Save as :</div>\
-			<div class="btn-group" class="hide-if-final">\
-				<a href="#" id="saveAsPrivate" class="btn btn-success">Private</a> <a\
-					href="#" id="saveAsProvisional" class="btn btn-success">Provisional</a>\
-				\
-			</div>\
-			<div class="btn-group"><a href="#" id="saveAsFinal" class="btn btn-warning">Final</a></div>\
+			<a href="#" id="saveUpdate" class="btn btn-success">Save</a>\
 		</div>\
 		<a href="#" id="delete" class="btn btn-danger editing-annotation" style="position:absolute; left:0px">Delete</a>\
 	</div>\
@@ -130,12 +124,13 @@ var Textus = Textus || {};
       var typeSelect = $('#typeSelect', this.$el);
       var editorPanel = $('#annotationEditor', this.$el);
       var form;
-      function updatedAnnotation(visibility) {
+      function updatedAnnotation(status) {
         return {
           user : annotation.user,
           type : annotation.type,
           id : annotation.id,
-          visibility : visibility,
+          public: true,
+          status: status || 'active',
           payload : form.getValue()
         };
       }
@@ -144,20 +139,12 @@ var Textus = Textus || {};
         form = createEditor(annotation.type, editorPanel, annotation);
         $('.creating-annotation', this.$el).hide();
 
-        $('#saveAsPrivate', this.$el).click(function() {
-          presenter.updateAnnotation(updatedAnnotation('private'));
-          return false;
-        });
-        $('#saveAsProvisional', this.$el).click(function() {
-          presenter.updateAnnotation(updatedAnnotation('provisional'));
-          return false;
-        });
-        $('#saveAsFinal', this.$el).click(function() {
-          presenter.updateAnnotation(updatedAnnotation('final'));
+        $('#saveUpdate', this.$el).click(function() {
+          presenter.updateAnnotation(updatedAnnotation());
           return false;
         });
         $('#delete', this.$el).click(function() {
-          presenter.updateAnnotation(updatedAnnotation('delete'));
+          presenter.updateAnnotation(updatedAnnotation('deleted'));
           return false;
         });
       } else {
@@ -177,7 +164,8 @@ var Textus = Textus || {};
           var newAnnotation = {
             payload : form.getValue(),
             type : typeSelect.val(),
-            visibility : 'private'
+            public: true,
+            status: 'active'
           };
           console.log(newAnnotation);
           presenter.createAnnotation(newAnnotation);

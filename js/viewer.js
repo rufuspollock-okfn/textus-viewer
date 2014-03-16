@@ -348,28 +348,14 @@ var Textus = Textus || {};
       });
       semantics.forEach(function(annotation) {
         var d = $("<div class='annotation' annotation-id=\"" + annotation.id + "\"/>");
-        var colour = {
-          'private' : 'red',
-          'provisional' : '#cc9933',
-          'final' : 'black',
-          'unknown' : 'pink'
-        }[annotation.visibility ? annotation.visibility : 'unknown'];
-        var userName = (annotation.dynamic && annotation.dynamic.displayName ? annotation.dynamic.displayName : annotation.user);
-        var userDisplay = {
-          'private' : userName + " <sup style='color:" + colour + "'>[private]</sup>",
-          'provisional' : userName + " <sup style='color:" + colour + "'>[provisional]</sup>",
-          'final' : userName,
-          'unknown' : userName
-        }[annotation.visibility ? annotation.visibility : 'unknown'];
-        d.append($("<div style='color:#555; padding-bottom:4px;'>" + userDisplay + "</div>"));
+        var userName = annotation.user;
+        d.append($("<div style='color:#555; padding-bottom:4px;'>" + userName + "</div>"));
         if (annotationRenderers[annotation.type]) {
           d.append(annotationRenderers[annotation.type](annotation.payload));
         } else {
           d.append(annotation.id);
         }
-        console.log(self.user.id);
-        if (self.loggedIn && self.user.id === annotation.user
-            && annotation.visibility != 'final') {
+        if (self.loggedIn && self.user.id === annotation.user) {
           var a = $("<a class='btn btn-success edit-annotation-button'>"
               + "<i class='icon-edit icon-white'></i></a>");
           a.click(function(event) {
@@ -427,7 +413,7 @@ var Textus = Textus || {};
           });
           editView.render();
           container.append(editView.el);
-          header.append("<h4>Edit annotation [" + annotation.visibility + "]</h4>");
+          header.append("<h4>Edit annotation</h4>");
           firingKeyEvents = false;
         },
         beforeClose : function() {
