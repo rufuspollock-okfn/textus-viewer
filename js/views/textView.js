@@ -333,16 +333,6 @@ define(['text!templates/textView.html', 'views/annotationTypes', 'models' ], fun
         });
       }
     },
-
-    forward : function() {
-      updateTextAsync(models.textLocationModel.get("textId"), models.textLocationModel.get("offset")
-          + models.textModel.get("text").length, true, textView.pageHeight(), textView.measure);
-    },
-
-    back : function() {
-      updateTextAsync(models.textLocationModel.get("textId"), models.textLocationModel.get("offset"),
-          false, textView.pageHeight(), textView.measure);
-    },
     editAnnotation : function(event, annotation) {
       var textId = models.textLocationModel.get("textId");
       Textus.Util.showModal({
@@ -424,14 +414,26 @@ define(['text!templates/textView.html', 'views/annotationTypes', 'models' ], fun
         renderLinks(pageText, linkCanvas, model.get('annotations'), annotations);
       });
       $('#nextPageButton', this.$el).click(function() {
-        presenter.forward();
+        self._forward();
         return false;
       });
       $('#previousPageButton', this.$el).click(function() {
-        presenter.back();
+        self._back();
         return false;
       });
     },
+
+    _forward: function() {
+      this.model.getPart(models.textLocationModel.get("offset")
+            + this.model.currentText.get("text").length, this.textSize, true);
+    },
+
+    _back : function() {
+      this.model.getPart(
+        models.textLocationModel.get("offset") - this.model.currentText.get("text").length,
+        this.textSize, true);
+    },
+
     destroy : function() {
       var model = this.model = this.options.textModel;
       model.unbind("change:text");

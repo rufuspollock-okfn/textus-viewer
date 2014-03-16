@@ -29,7 +29,7 @@ css/          # css code
 ## TODO
 
 * [x] do first pass strip down to essential files
-* [ ] Delete more stuff e.g. anything bibjson related (see e.g. js/textus.js)
+* [x] Delete more stuff e.g. anything bibjson related (see e.g. js/textus.js)
 * [ ] Refactor to have a Text model which rest of code uses and which is async.
   Basically something along these lines:
 
@@ -41,4 +41,8 @@ css/          # css code
 * [ ] Tests for markup code
 * [ ] Remove require.js dependency and simplify code further
 * [ ] Markup code usable as node js lib or just separately
+
+To reinstance
+
+* [ ] arrow based navigation
 

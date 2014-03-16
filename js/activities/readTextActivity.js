@@ -74,17 +74,6 @@ define([ 'views/textView', 'views/editSemanticAnnotationView', 'models' ], funct
           trigger : true
         });
       });
-
-      /* Set up a key listener on the document to allow arrow key based page navigation */
-      $(document.documentElement).keyup(function(event) {
-        if (self.firingKeyEvents) {
-          if (event.keyCode == 37) {
-            presenter.back();
-          } else if (event.keyCode == 39) {
-            presenter.forward();
-          }
-        }
-      });
     },
 
     /*
