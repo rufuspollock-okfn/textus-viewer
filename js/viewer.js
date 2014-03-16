@@ -195,7 +195,7 @@ var Textus = Textus || {};
       _.bindAll(this);
       var self = this;
       var model = this.model.currentText;
-      var textSize = 350;
+      this.textSize = 350;
       this.textOffset = options.offset || 0;
       this.user = options.user;
       this.loggedIn = options.user !== null;
@@ -218,7 +218,7 @@ var Textus = Textus || {};
           clearTimeout(resizeTimer);
         }
         resizeTimer = setTimeout(function() {
-          self.model.getPart(self.textOffset, textSize, true);
+          self.model.getPart(self.textOffset, self.textSize, true);
         }, 300);
         renderCanvas(pageCanvas, pageText, model.get('annotations'));
         renderLinks(pageText, linkCanvas, model.get('annotations'), annotations);
@@ -251,14 +251,13 @@ var Textus = Textus || {};
     },
 
     _forward: function() {
-      this.model.getPart(this.textOffset
-            + this.model.currentText.get("text").length, this.textSize, true);
+      var newOffset = this.textOffset + this.model.currentText.get("text").length;
+      this.model.getPart(newOffset, this.textSize, true);
     },
 
     _back : function() {
-      this.model.getPart(
-        this.textOffset - this.model.currentText.get("text").length,
-        this.textSize, true);
+      var newOffset = this.textOffset - this.model.currentText.get("text").length;
+      this.model.getPart(newOffset, this.textSize, true);
     },
 
     destroy : function() {

@@ -90,6 +90,7 @@ my.Text = Backbone.Model.extend({
   // For present lets' just render a certain amount of text ...
   // TODO: forwards stuff
   getPart: function(offset, length, forwards) {
+    offset = Math.max(0, offset);
     var self = this;
     var text = self.attributes.text.slice(offset, offset+length);
 
