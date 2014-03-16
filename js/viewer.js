@@ -1,6 +1,30 @@
 var Textus = Textus || {};
 
 (function(my) {
+  /* Configure the Form layout to use bootstrap CSS */
+  Backbone.Form.setTemplates({
+    form : '<form class="form-horizontal">{{fieldsets}}</form>',
+    fieldset : '<fieldset><legend>{{legend}}</legend>{{fields}}</fieldset>',
+    field : '<div class="control-group"><label class="control-label" for="{{id}}">'
+        + '{{title}}</label><div class="controls"><div class="input-xlarge">'
+        + '{{editor}}</div></div></div>',
+    nestedField : '<div><div title="{{title}}" class="input-xlarge">{{editor}}</div>'
+        + '<div class="help-block">{{help}}</div></div>',
+    list : '<div class="bbf-list"><ul class="unstyled clearfix">{{items}}</ul>'
+        + '<button class="bbf-add" data-action="add">Add</div></div>',
+    listItem : '<li class="clearfix"><div class="pull-left">{{editor}}</div>'
+        + '<button class="bbf-del" data-action="remove">x</button></li>',
+    date : '<div class="bbf-date"><select data-type="date" class="bbf-date">'
+        + '{{dates}}</select><select data-type="month" class="bbf-month">'
+        + '{{months}}</select><select data-type="year" class="bbf-year">' + '{{years}}</select></div>',
+    dateTime : '<div class="bbf-datetime"><p>{{date}}</p>'
+        + '<p><select data-type="hour" style="width: 4em">{{hours}}</select>'
+        + ':<select data-type="min" style="width: 4em">{{mins}}</select></p></div>',
+    'list.Modal' : '<div class="bbf-list-modal">{{summary}}</div>'
+  }, {
+    error : 'error'
+  });
+
 
   my.Viewer = Backbone.View.extend({
     initialize: function(options) {
@@ -635,7 +659,7 @@ var Textus = Textus || {};
     editAnnotation : function(event, annotation) {
       Textus.Util.showModal({
         constructor : function(container, header, closeModal) {
-          var editView = new EditSemanticAnnotationView({
+          var editView = new Textus.Annotation.Editor({
             presenter : {
               updateAnnotation : function(annotation) {
                 $.post("api/semantics/" + annotation.id, annotation, function(response) {
