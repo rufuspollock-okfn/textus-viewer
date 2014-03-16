@@ -3,9 +3,9 @@
 module("Model");
 
 var fixtures = {
-  textUrl: '../testdata/1-text.txt',
-  typographyUrl: '../testdata/1-typography.json',
-  annotationsUrl: '../testdata/1-annotations.json'
+  textUrl: './fixtures/1-text.txt',
+  typographyUrl: './fixtures/1-typography.json',
+  annotationsUrl: './fixtures/1-annotations.json'
 };
 
 var fixtures3 = {

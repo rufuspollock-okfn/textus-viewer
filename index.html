@@ -24,9 +24,9 @@ jQuery(document).ready(function() {
   var text = new Textus.Model.Text({
     // id is needed if new annotations will be allowed
     id: 'text-1',
-    textUrl: 'testdata/1-text.txt',
-    typographyUrl: 'testdata/1-typography.json',
-    annotationsUrl: 'testdata/1-annotations.json'
+    textUrl: 'test/fixtures/1-text.txt',
+    typographyUrl: 'test/fixtures/1-typography.json',
+    annotationsUrl: 'test/fixtures/1-annotations.json'
   });
   // Load the text
   text.fetch(function(err) {
