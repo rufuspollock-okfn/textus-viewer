@@ -196,10 +196,22 @@ my.trim = function(data, forwards, height, measure) {
   }
 };
 
+my.textSelectionModel = new (Backbone.Model.extend({
+  defaults : {
+    // The raw text captured by the selection
+    text : "",
+    // The location within the enclosing text of the
+    // selected text.
+    start : 0,
+    // The location within the enclosing text of the end of
+    // the selection (i.e. start + text.length assuming
+    // there are no bugs!)
+    end : 0
+  }
+}));
+
 var markupStruct = function(struct) {
   return Textus.Util.markupText(struct.text, struct.offset, struct.typography, struct.semantics);
 };
-
-
 
 }(Textus.Model));

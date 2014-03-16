@@ -16,7 +16,37 @@
 <script src="vendor/jquery.ui.colorPicker.js"></script>
 <script src="js/textus.js"></script>
 <script src="js/model.js"></script>
-<script data-main="js/main" src="vendor/require-2.0.4.js"></script>
+<script src="js/annotation.js"></script>
+<script src="js/viewer.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+  // Create a Text object with some fixture data
+  var text = new Textus.Model.Text({
+    // id is needed if new annotations will be allowed
+    id: 'text-1',
+    textUrl: 'testdata/1-text.txt',
+    typographyUrl: 'testdata/1-typography.json',
+    annotationsUrl: 'testdata/1-annotations.json'
+  });
+  // Load the text
+  text.fetch(function(err) {
+    if (err) {
+      alert('There was an error loading the text: ' + err);
+      console.error(err);
+      return;
+    }
+    var viewer = new Textus.Viewer({
+      el: $('.textus-viewer-here'),
+      text: text,
+      router: null,
+      user: {
+        name: 'bob'
+      }
+    });
+    viewer.render();
+  });
+});
+</script>
 </head>
 <body>
 	<div id="modalGlassPane" class="textus-glass-pane"></div>
@@ -51,9 +81,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="container textus-content">
-		<div class="main" id="main"></div>
-	</div>
+  <div class="textus-viewer-here"></div>
 
 </body>
 </html>

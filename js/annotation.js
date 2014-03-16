@@ -1,20 +1,19 @@
+var Textus = Textus || {};
+
 /**
  * Mapping for renderers and editors for different annotation types. Add new rendering functions and
  * editor schemas to this file to create new annotation types.
  */
-define([ 'comment', 'tag' ].map(function(type) {
-  return 'text!templates/annotations/' + type + '.html';
-}), function(comment, tag) {
 
-  return {
-
+(function(my) {
+  my.Annotation = {
     /**
      * A map of type -> function, the function being passed the annotation payload and returning
      * HTML to represent that annotation.
      */
     renderers : {
-      'textus:comment' : _.template(comment),
-      'textus:tag' : _.template(tag)
+      'textus:comment' : _.template('<div><%= text %></div>'),
+      'textus:tag' : _.template('<div><b><%= name %></b> = <%= value %></div>')
     },
 
     /**
@@ -42,5 +41,5 @@ define([ 'comment', 'tag' ].map(function(type) {
     }
 
   };
+})(Textus);
 
-});

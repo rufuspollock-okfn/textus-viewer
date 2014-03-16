@@ -42,7 +42,7 @@ css/          # css code
 * [ ] Remove require.js dependency and simplify code further
 * [ ] Markup code usable as node js lib or just separately
 
-To reinstance
+To reinstate
 
 * [ ] arrow based navigation
 
