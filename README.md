@@ -4,7 +4,7 @@ The Textus viewer is a pure HTML + Javascript application for viewing [Textus
 format texts][format]. It is part of the [Textus project][textus].
 
 [textus]: http://okfnlabs.org/textus/
-[format]: http://okfnlabs.org/textus/format/
+[format]: http://okfnlabs.org/textus/doc/textus-format.html
 
 ## Demo
 
